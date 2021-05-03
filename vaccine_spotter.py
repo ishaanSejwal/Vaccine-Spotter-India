@@ -10,26 +10,23 @@ email_password = '<password>'
 sent_from = email_user
 to = ['<to_email@email.com>']
 
-minutes = 1
+seconds = 15
 
 today = date.today()
+should_email = False
 
+__district = "188" # 188 - Gurgaon
 
-__district = "297" #kannur
-
-'''
-295 - Kasargod
-296 - Thiruvananthapuram
-298 - kollam
-299 - Wayanad
-300 - Pathanamthitta
-302 - Malappuram
-303 - thrissue
-305 - Kozikode
-306- idukki
-307 - ernakulam
-308 - palakkad
-'''
+# Gurgaon distrcit id: 188
+# Faridabad district id: 199
+# Nuh district id: 205
+# Jhajjar district id: 189
+# Rewari district id: 202
+# Alwar district id: 512
+# South delhi district id: 149
+# South west delhi district  id: 150
+# South east delhi district id: 144
+# West delhi district id: 142
 
 
 
@@ -73,7 +70,7 @@ def parse_json(result):
 	for center in centers:
 		sessions = center['sessions']
 		for session in sessions:
-			if session['available_capacity'] > 0:
+			if session['available_capacity'] > 0 and session['min_age_limit'] == 18:
 				res = { 'name': center['name'], 'block_name':center['block_name'],'age_limit':session['min_age_limit'], 'vaccine_type':session['vaccine'] , 'date':session['date'],'available_capacity':session['available_capacity'] }
 				output.append(res)
 	return output
@@ -95,13 +92,13 @@ def call_api():
             result_str = ""
             for center in output:
 
-                '''print center['name']
+                print center['name']
                 print "block:"+center['block_name']
                 print "vaccine count:"+str(center['available_capacity'])
                 print "vaccines type:" + center['vaccine_type']
                 print center['date']
                 print "age_limit:"+ str(center['age_limit'])
-                print "---------------------------------------------------------" '''
+                print "---------------------------------------------------------"
                 result_str = result_str + center['name'] + "\n"
                 result_str = result_str + "block:"+center['block_name'] + "\n"
                 result_str = result_str + "vaccine count:"+str(center['available_capacity']) + "\n"
@@ -109,7 +106,8 @@ def call_api():
                 result_str = result_str + center['date'] + "\n"
                 result_str = result_str + "age_limit:"+str(center['age_limit'])+"\n"
                 result_str = result_str + "-----------------------------------------------------\n"
-            send_email(result_str)
+            if should_email:
+		        send_email(result_str)
 
         else:
             
@@ -121,7 +119,7 @@ if __name__ == '__main__':
     call_api()
     while True:
         delta = datetime.now()-t
-        if delta.seconds >= minutes * 60:
+        if delta.seconds >= seconds:
             call_api()
             t = datetime.now()
         
