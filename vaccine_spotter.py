@@ -1,5 +1,4 @@
 import requests
-# import logging
 from datetime import date,datetime
 import os
 import sys
