@@ -69,7 +69,6 @@ Subject: %s
 	    print (e)
 	
 
-
 def parse_json(result):
 	output = []
 	centers = result['centers']
